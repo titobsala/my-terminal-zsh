@@ -1,9 +1,20 @@
 #!/bin/bash
 
+# Verifica se Git e Curl estão instalados
+if ! command -v git &> /dev/null; then
+    echo "Git não está instalado. Por favor, instale o Git e execute o script novamente."
+    exit 1
+fi
+
+if ! command -v curl &> /dev/null; then
+    echo "Curl não está instalado. Por favor, instale o Curl e execute o script novamente."
+    exit 1
+fi
+
 # Instalação do Oh My Zsh
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     echo "Instalando Oh My Zsh..."
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 else
     echo "Oh My Zsh já está instalado."
 fi
@@ -30,11 +41,13 @@ if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autocomplete" ]; then
 fi
 
 # Copiando o .zshrc personalizado para o diretório do usuário
+if [ -f "$HOME/.zshrc" ]; then
+    echo "Fazendo backup do .zshrc existente..."
+    mv $HOME/.zshrc $HOME/.zshrc.backup
+fi
 echo "Copiando .zshrc personalizado..."
 cp .zshrc $HOME/.zshrc
 
-# Carregando a nova configuração
-echo "Configurando Zsh..."
-source $HOME/.zshrc
-
+# Mensagem para o usuário
+echo "Por favor, abra um novo terminal para que as configurações sejam aplicadas."
 echo "Configuração concluída!"
